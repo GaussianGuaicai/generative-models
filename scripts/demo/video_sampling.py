@@ -3,6 +3,7 @@ import os
 from pytorch_lightning import seed_everything
 
 from scripts.demo.streamlit_helpers import *
+from sgm.models.diffusion import DiffusionEngine
 
 SAVE_PATH = "outputs/demo/vid/"
 
@@ -14,7 +15,7 @@ VERSION2SPECS = {
         "C": 4,
         "f": 8,
         "config": "configs/inference/svd.yaml",
-        "ckpt": "checkpoints/svd.safetensors",
+        "ckpt": "/mnt/h/Hyper-Storage/Library/Stable Video Diffusion/SDV Models/stable-video-diffusion-img2vid/svd.safetensors",
         "options": {
             "discretization": 1,
             "cfg": 2.5,
@@ -33,7 +34,7 @@ VERSION2SPECS = {
         "C": 4,
         "f": 8,
         "config": "configs/inference/svd_image_decoder.yaml",
-        "ckpt": "checkpoints/svd_image_decoder.safetensors",
+        "ckpt": "/mnt/h/Hyper-Storage/Library/Stable Video Diffusion/SDV Models/stable-video-diffusion-img2vid/svd_image_decoder.safetensors",
         "options": {
             "discretization": 1,
             "cfg": 2.5,
@@ -103,6 +104,8 @@ if __name__ == "__main__":
     else:
         mode = "skip"
 
+    set_lowvram_mode(st.checkbox("Low vram mode", True))
+
     H = st.sidebar.number_input(
         "H", value=version_dict["H"], min_value=64, max_value=2048
     )
@@ -120,7 +123,7 @@ if __name__ == "__main__":
         state = init_st(version_dict, load_filter=True)
         if state["msg"]:
             st.info(state["msg"])
-        model = state["model"]
+        model:DiffusionEngine = state["model"]
 
         ukeys = set(
             get_unique_embedder_keys_from_conditioner(state["model"].conditioner)

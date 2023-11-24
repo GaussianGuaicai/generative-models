@@ -34,6 +34,7 @@ from sgm.modules.diffusionmodules.sampling import (DPMPP2MSampler,
                                                    LinearMultistepSampler)
 from sgm.util import append_dims, default, instantiate_from_config
 
+from sgm.models.diffusion import DiffusionEngine
 
 @st.cache_resource()
 def init_st(version_dict, load_ckpt=True, load_filter=True):
@@ -83,7 +84,7 @@ def unload_model(model):
 
 
 def load_model_from_config(config, ckpt=None, verbose=True):
-    model = instantiate_from_config(config.model)
+    model:DiffusionEngine = instantiate_from_config(config.model)
 
     if ckpt is not None:
         print(f"Loading model from {ckpt}")
@@ -475,7 +476,7 @@ def get_init_img(batch_size=1, key=None):
 
 
 def do_sample(
-    model,
+    model:DiffusionEngine,
     sampler,
     value_dict,
     num_samples,
