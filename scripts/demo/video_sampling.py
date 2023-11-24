@@ -161,7 +161,7 @@ if __name__ == "__main__":
 
         decoding_t = st.number_input(
             "Decode t frames at a time (set small if you are low on VRAM)",
-            value=options.get("decoding_t", T),
+            value=options.get("decoding_t", 2), # low value by default
             min_value=1,
             max_value=int(1e9),
         )

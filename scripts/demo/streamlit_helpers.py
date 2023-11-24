@@ -533,9 +533,9 @@ def do_sample(
                         )
                     if k in ["crossattn", "concat"] and T is not None:
                         uc[k] = repeat(uc[k], "b ... -> b t ...", t=T)
-                        uc[k] = rearrange(uc[k], "b t ... -> (b t) ...", t=T)
+                        uc[k] = rearrange(uc[k], "b t ... -> (b t) ...", t=T).to(dtype=torch.float16)
                         c[k] = repeat(c[k], "b ... -> b t ...", t=T)
-                        c[k] = rearrange(c[k], "b t ... -> (b t) ...", t=T)
+                        c[k] = rearrange(c[k], "b t ... -> (b t) ...", t=T).to(dtype=torch.float16)
 
                 additional_model_inputs = {}
                 for k in batch2model_input:
@@ -546,17 +546,17 @@ def do_sample(
                             sampler.guider, (VanillaCFG, LinearPredictionGuider)
                         ):
                             additional_model_inputs[k] = torch.zeros(
-                                num_samples[0] * 2, num_samples[1]
-                            ).to("cuda")
-                        else:
-                            additional_model_inputs[k] = torch.zeros(num_samples).to(
-                                "cuda"
+                                num_samples[0] * 2, num_samples[1],
+                                dtype=torch.float16,
+                                device="cuda"
                             )
+                        else:
+                            additional_model_inputs[k] = torch.zeros(num_samples,dtype=torch.float16,device="cuda")
                     else:
                         additional_model_inputs[k] = batch[k]
 
                 shape = (math.prod(num_samples), C, H // F, W // F)
-                randn = torch.randn(shape).to("cuda")
+                randn = torch.randn(shape,dtype=torch.float16,device="cuda")
 
                 def denoiser(input, sigma, c):
                     return model.denoiser(
