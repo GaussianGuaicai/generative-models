@@ -15,7 +15,7 @@ VERSION2SPECS = {
         "C": 4,
         "f": 8,
         "config": "configs/inference/svd.yaml",
-        "ckpt": "/mnt/h/Hyper-Storage/Library/Stable Video Diffusion/SDV Models/stable-video-diffusion-img2vid/svd.safetensors",
+        "ckpt": "checkpoints/svd.safetensors",
         "options": {
             "discretization": 1,
             "cfg": 2.5,
@@ -34,7 +34,7 @@ VERSION2SPECS = {
         "C": 4,
         "f": 8,
         "config": "configs/inference/svd_image_decoder.yaml",
-        "ckpt": "/mnt/h/Hyper-Storage/Library/Stable Video Diffusion/SDV Models/stable-video-diffusion-img2vid/svd_image_decoder.safetensors",
+        "ckpt": "checkpoints/svd_image_decoder.safetensors",
         "options": {
             "discretization": 1,
             "cfg": 2.5,
