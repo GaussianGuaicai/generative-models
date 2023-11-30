@@ -10,7 +10,7 @@ VERSION2SPECS = {
         "f": 8,
         "is_legacy": False,
         "config": "configs/inference/sd_xl_base.yaml",
-        "ckpt": "checkpoints/sd_xl_turbo_1.0.safetensors",
+        "ckpt": "checkpoints/sd_xl_turbo_1.0_fp16.safetensors",
     },
 }
 
@@ -163,6 +163,8 @@ if __name__ == "__main__":
             mode = "txt2img"
         else:
             mode = "skip"
+
+        set_lowvram_mode(st.checkbox("Low vram mode", True))
 
     if mode != "skip":
         state = init_st(version_dict, load_filter=True)
