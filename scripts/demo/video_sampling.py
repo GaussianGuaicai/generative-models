@@ -143,6 +143,7 @@ if __name__ == "__main__":
             )
             value_dict["cond_frames_without_noise"] = img
             value_dict["cond_frames"] = img + cond_aug * torch.randn_like(img)
+            #print(f'conditioning frames: {value_dict["cond_frames"].shape}')
             value_dict["cond_aug"] = cond_aug
 
         seed = st.sidebar.number_input(

@@ -18,6 +18,8 @@ from scripts.util.detection.nsfw_and_watermark_dectection import \
 from sgm.inference.helpers import embed_watermark
 from sgm.util import default, instantiate_from_config
 
+from sgm.models.diffusion import DiffusionEngine
+from sgm.modules import GeneralConditioner
 
 def sample(
     input_path: str = "assets/test_image.png",  # Can either be image file or folder with image files
@@ -71,6 +73,8 @@ def sample(
         num_steps,
     )
     torch.manual_seed(seed)
+    model:DiffusionEngine
+    conditioner:GeneralConditioner = model.conditioner
 
     path = Path(input_path)
     all_img_paths = []
@@ -140,13 +144,13 @@ def sample(
         with torch.no_grad():
             with torch.autocast(device):
                 batch, batch_uc = get_batch(
-                    get_unique_embedder_keys_from_conditioner(model.conditioner),
+                    get_unique_embedder_keys_from_conditioner(conditioner),
                     value_dict,
                     [1, num_frames],
                     T=num_frames,
                     device=device,
                 )
-                c, uc = model.conditioner.get_unconditional_conditioning(
+                c, uc = conditioner.get_unconditional_conditioning(
                     batch,
                     batch_uc=batch_uc,
                     force_uc_zero_embeddings=[
