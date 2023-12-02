@@ -11,7 +11,7 @@ cd generative-models
 streamlit run scripts/demo/video_sampling.py
 ```
 
-Launch SDXL-Turbo web app:
+Launch SDXL-Turbo or SD-Turbo web app:
 ```shell
 cd generative-models
 streamlit run scripts/demo/turbo.py
