@@ -896,7 +896,7 @@ def load_img_for_prediction(
 
 
 def save_video_as_grid_and_mp4(
-    video_batch: torch.Tensor, save_path: str, T: int, fps: int = 5
+    video_batch: torch.Tensor, save_path: str, T: int, fps: int = 5, save_frames=True
 ):
     os.makedirs(save_path, exist_ok=True)
     base_count = len(glob(os.path.join(save_path, "*.mp4")))
@@ -904,7 +904,13 @@ def save_video_as_grid_and_mp4(
     video_batch = rearrange(video_batch, "(b t) c h w -> b t c h w", t=T)
     video_batch = embed_watermark(video_batch)
     for vid in video_batch:
-        save_image(vid, fp=os.path.join(save_path, f"{base_count:06d}.png"), nrow=4)
+        if save_frames:
+            for i,frame in enumerate(vid):
+                new_save_path = os.path.join(save_path,f"{base_count:06d}")
+                os.makedirs(new_save_path, exist_ok=True)
+                save_frame(frame, os.path.join(new_save_path, f"frame_{i+1}.png"))
+        else:
+            save_image(vid, fp=os.path.join(save_path, f"{base_count:06d}.png"), nrow=4)
 
         video_path = os.path.join(save_path, f"{base_count:06d}.mp4")
         vid = (
@@ -920,3 +926,8 @@ def save_video_as_grid_and_mp4(
         st.video(video_bytes)
 
         base_count += 1
+
+def save_frame(vid:torch.Tensor, save_path:str):
+    frame = vid.mul(255).add_(0.5).clamp_(0, 255).permute(1, 2, 0).to("cpu", torch.uint8).numpy()
+    im = Image.fromarray(frame)
+    im.save(save_path)
